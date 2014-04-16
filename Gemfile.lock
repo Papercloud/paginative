@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    paginative (0.0.1)
-      geocoder
-      rails (~> 4.1.0)
+    paginative (0.0.2)
+      geocoder (~> 1.1.9)
+      rails (>= 4.0.0)
 
 GEM
   remote: https://rubygems.org/
