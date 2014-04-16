@@ -88,7 +88,6 @@ TO DO:
 
 * Better "limits" to pages, done in a cleaner way.
 * Sorting built into the gem, at the moment you have to do the sorting *before* passing the collection to the gem.
-* Make sorting case insensitive
 
 Contributing
 ------------
