@@ -25,7 +25,7 @@ describe TestModel do
     it "starts from the name that is passed in" do
       models = FactoryGirl.create_list(:test_model, 30)
 
-      expect(TestModel.with_name_from("e", 1).first.name).to eq "e"
+      expect(TestModel.with_name_from("e", 1).first.name).to eq "f"
     end
   end
 
@@ -44,7 +44,7 @@ describe TestModel do
     end
 
     it "defaults to 0 distance" do
-      model = FactoryGirl.create(:test_model, latitude: -37, longitude: 144)
+      model = FactoryGirl.create(:test_model, latitude: -37.01, longitude: 144)
 
       expect(TestModel.by_distance_from(-37, 144).first).to eq model
     end

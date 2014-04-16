@@ -12,7 +12,7 @@ rescue LoadError
 end
 
 # Load All the stuff we need
-require 'paginative/hooks'
+require 'paginative/models/model_extension'
 
 # if not using Railtie, call `Ragamuffins::Hooks.init` directly
 if defined? Rails
