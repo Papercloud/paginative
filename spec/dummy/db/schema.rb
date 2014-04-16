@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140415060518) do
+ActiveRecord::Schema.define(version: 20140416035443) do
 
   create_table "paginative_test_models", force: true do |t|
     t.string   "name"
+    t.float    "latitude"
+    t.float    "longitude"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "address"
+  end
+
+  create_table "test_models", force: true do |t|
+    t.string   "name"
+    t.string   "address"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at"

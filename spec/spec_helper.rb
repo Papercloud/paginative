@@ -49,21 +49,33 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.before(:suite) do
-      DatabaseCleaner.strategy = :transaction
-      DatabaseCleaner.clean_with(:truncation)
-      DatabaseCleaner.start
-      DatabaseCleaner.clean
-    end
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
 
-    config.before(:each) do
-      DatabaseCleaner.clean
-    end
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
 
-    config.after(:each) do
-      DatabaseCleaner.clean
-    end
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
 
-    config.after(:suite) do
-      DatabaseCleaner.clean
-    end
 end
+
+Geocoder.configure(:lookup => :test)
+
+Geocoder::Lookup::Test.set_default_stub(
+  [
+    {
+      'latitude'     => -37,
+      'longitude'    => -144,
+      'address'      => 'LOT 1 Watersons Road, Tarrengower VIC 3463',
+      'state'        => 'Victoria',
+      'state_code'   => 'VIC',
+      'country'      => 'Australia',
+      'country_code' => 'AUS'
+    }
+  ]
+)
+

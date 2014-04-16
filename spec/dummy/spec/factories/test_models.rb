@@ -1,8 +1,9 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :test_model, :class => 'TestModel' do
-    sequence(:name) { |n| "#{("a".."zzz").to_a[n]}" }
+  factory :dummy_model do
+    name "MyString"
+    address "MyString"
     latitude -37
     longitude 144
   end
