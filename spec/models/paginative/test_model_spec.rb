@@ -23,9 +23,10 @@ describe TestModel do
     end
 
     it "starts from the name that is passed in" do
-      models = FactoryGirl.create_list(:test_model, 30)
-
-      expect(TestModel.with_name_from("e", 1).first.name).to eq "f"
+      # This takes advantage of the [n] counter in the factories
+      model1 = FactoryGirl.create(:test_model)
+      model2 = FactoryGirl.create(:test_model)
+      expect(TestModel.with_name_from(model1.name, 1).first).to eq model2
     end
   end
 

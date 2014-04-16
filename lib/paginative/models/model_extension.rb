@@ -11,7 +11,7 @@ module Paginative
         end
 
         def self.with_name_from(name="", limit=25)
-            self.where("name > ?", name).offset(0).limit(limit)
+            self.where("lower(name) > ?", name.downcase).offset(0).limit(limit)
         end
       # RUBY
     end

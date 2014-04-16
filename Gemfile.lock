@@ -3,7 +3,7 @@ PATH
   specs:
     paginative (0.0.2)
       geocoder (~> 1.1.9)
-      rails (>= 4.0.0)
+      rails (>= 4.0)
 
 GEM
   remote: https://rubygems.org/
