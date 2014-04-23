@@ -1,21 +1,13 @@
-require_relative '../../spec_helper'
+require 'spec_helper'
 
 describe TestModel do
 
-  describe "by id" do
-
-    it "defaults to 25 results" do
-      models = FactoryGirl.create_list(:test_model, 30)
-      TestModel.with_id_from().count.should eq 25
-    end
-
-    it "returns results after given id" do
-      10.times do |count|
-        FactoryGirl.create(:test_model, id: count + 1)
-      end
-      TestModel.with_id_from(5).count.should eq 5
-      TestModel.with_id_from(5).first.id.should eq 6
-    end
+  def create_models
+    @model1 = FactoryGirl.create(:test_model, address: "Lorem", created_at: Time.now.ago(2.days))
+    @model2 = FactoryGirl.create(:test_model, address: "Ipsum", created_at: Time.now.ago(1.days))
+    @model3 = FactoryGirl.create(:test_model, address: "New York", created_at: Time.now)
+    @model4 = FactoryGirl.create(:test_model, address: "BroadWay", created_at: (Time.now + 1.day))
+    @model5 = FactoryGirl.create(:test_model, address: "Island St", created_at: (Time.now + 2.days))
   end
 
   describe "by passed field" do
@@ -30,6 +22,18 @@ describe TestModel do
       end
       
       TestModel.with_field_from("created_at", (Time.now.ago(5.days))).count.should eq 5
+    end
+
+    it "doesn't return values less than the passed in value" do
+      create_models
+
+      TestModel.with_field_from("created_at", @model3.created_at).should eq [@model3, @model4, @model5]
+    end
+
+    it "works on INT values" do
+      create_models
+      
+      TestModel.with_field_from("id", @model3.id).should eq [@model3, @model4, @model5]
     end
   end
 
