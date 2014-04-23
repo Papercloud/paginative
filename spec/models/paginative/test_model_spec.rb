@@ -2,6 +2,37 @@ require_relative '../../spec_helper'
 
 describe TestModel do
 
+  describe "by id" do
+
+    it "defaults to 25 results" do
+      models = FactoryGirl.create_list(:test_model, 30)
+      TestModel.with_id_from().count.should eq 25
+    end
+
+    it "returns results after given id" do
+      10.times do |count|
+        FactoryGirl.create(:test_model, id: count + 1)
+      end
+      TestModel.with_id_from(5).count.should eq 5
+      TestModel.with_id_from(5).first.id.should eq 6
+    end
+  end
+
+  describe "by passed field" do
+    it "defaults to 25 results" do
+      models = FactoryGirl.create_list(:test_model, 30)
+      TestModel.with_field_from("created_at", (Time.now.yesterday)).count.should eq 25
+    end
+
+    it "returns results subsequent rows after given value on field" do
+      10.times do |count|
+        FactoryGirl.create(:test_model, created_at: Time.now.ago(count.days))
+      end
+      
+      TestModel.with_field_from("created_at", (Time.now.ago(5.days))).count.should eq 5
+    end
+  end
+
   context "by name" do
 
     it "is valid" do
