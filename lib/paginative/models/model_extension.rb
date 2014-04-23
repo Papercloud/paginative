@@ -11,7 +11,7 @@ module Paginative
         end
 
         def self.with_name_from(name="", limit=25)
-            self.where("lower(name) > ?", name.downcase).offset(0).limit(limit)
+            self.order(name: :asc).where("lower(name) > ?", name.downcase).offset(0).limit(limit)
         end
 
         def self.with_id_from(id=0, limit=25)
@@ -19,7 +19,7 @@ module Paginative
         end
 
         def self.with_field_from(field="", value="", limit=25)
-          self.where("#{field} > '#{value}'").limit(limit)
+          self.order("#{field} ASC").where("#{field} > '#{value}'").limit(limit)
         end
       # RUBY
     end
