@@ -1,4 +1,4 @@
-require 'spec_helper'
+require_relative '../../spec_helper'
 
 describe TestModel do
 
@@ -20,7 +20,7 @@ describe TestModel do
       10.times do |count|
         FactoryGirl.create(:test_model, created_at: Time.now.ago(count.days))
       end
-      
+
       TestModel.with_field_from("created_at", (Time.now.ago(5.days))).count.should eq 5
     end
 
@@ -32,8 +32,8 @@ describe TestModel do
 
     it "works on INT values" do
       create_models
-      
-      TestModel.with_field_from("id", @model3.id).should eq [@model3, @model4, @model5]
+
+      TestModel.with_field_from("id", @model3.id).should match_array [@model4, @model5]
     end
   end
 
@@ -92,6 +92,26 @@ describe TestModel do
       expect(TestModel.by_distance_from(-37, 144, 100).length).to eq 1
       expect(TestModel.by_distance_from(-37, 144, 100).first).to eq far_away_model
 
+    end
+  end
+
+  context "Sorting" do
+    before :each do
+      @first = FactoryGirl.create(:test_model, name: "ab", latitude: -37, longitude: 144)
+      @second = FactoryGirl.create(:test_model, name: "ba", latitude: -37.5, longitude: 144.5)
+    end
+
+    it "defaults to ascending by name" do
+
+      expect(TestModel.with_name_from("a")).to eq [@first, @second]
+    end
+
+    it "can be set to descending on name" do
+      expect(TestModel.with_name_from("z", 25, "desc")).to eq [@second, @first]
+    end
+
+    it "can be set to descending on custom field" do
+      expect(TestModel.with_field_from("id", @second.id+1, 25, "desc")).to eq [@second, @first]
     end
   end
 end
