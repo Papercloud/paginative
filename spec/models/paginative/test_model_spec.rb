@@ -97,8 +97,8 @@ describe TestModel do
 
   context "Sorting" do
     before :each do
-      @first = FactoryGirl.create(:test_model, name: "ab", latitude: -37, longitude: 144)
-      @second = FactoryGirl.create(:test_model, name: "ba", latitude: -37.5, longitude: 144.5)
+      @first = FactoryGirl.create(:test_model, name: "ab", latitude: -37.5, longitude: 144)
+      @second = FactoryGirl.create(:test_model, name: "ba", latitude: -38, longitude: 144.5)
     end
 
     it "defaults to ascending by name" do
@@ -112,6 +112,10 @@ describe TestModel do
 
     it "can be set to descending on custom field" do
       expect(TestModel.with_field_from("id", @second.id+1, 25, "desc")).to eq [@second, @first]
+    end
+
+    it "always sorts distance by ascending" do
+      expect(TestModel.by_distance_from(-37,144,0,2)).to eq [@first, @second]
     end
   end
 end

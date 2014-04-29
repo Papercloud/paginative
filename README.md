@@ -71,17 +71,30 @@ models.by_distance_from(latitude, longitude, distance)
 
 This will return the next page of objects that are further away than the distance passed in. So if you are doing a nearby sort, and you need the next page, all you have to do is pass in the distance that the last object on the page from your current `:latitude` and `:longitude` and it will give you the next page of results.
 
-**At the moment this doesn't automatically sort your collection by distance during the method, it relies on you have already sorted your collection. This is coming in a future release**
 
+### By a Custom Field
+
+Lets say you want to sort by something other than name or distance, well Paginative has you covered.
+
+```
+models = YourModel.all
+
+models.with_field_from("id", 1)
+```
+
+This will return all models that have an ID greater than 1, ordered by ID. Any column can be passed in, and the results will automatically be ordered by that column.
 
 Options & Defaults
 ------------------
 
-Both methods default to returning `25` results per page (or call). But this can be overridden by passing in an extra argument to the call.
+### Results per page
+
+All methods default to returning `25` results per page (or call). But this can be overridden by passing in an extra argument to the call.
 
 ```
 YourModel.with_name_from(name, limit_per_page)
 YourModel.by_distance_from(latitude, longitude, distance, limit_per_page)
+YourModel.with_field_from(field, from, limit_per_page)
 ```
 
 This means that if you only want to fetch records one at a time you could do so by calling `YourModel.with_name_from(name, 1)`.
@@ -90,6 +103,30 @@ If you do not pass in a `name` argument, it will default to nothing and give you
 
 Also if you do not pass a `distance` in as an argument, it will assume that you are starting at the start and default to 0.
 
+### Ordering
+
+You can now pass in a final argument if you would like to reverse the order of thr results (sort by `desc` instead of `asc`).
+
+```
+YourModel.with_name_from(name, limit_per_page, order)
+YourModel.with_field_from(field, from, limit_per_page, order)
+```
+
+This is as simple as passing in the string `"desc"` as your final argument in the call.
+
+eg.
+
+```
+models = YourModel.all
+
+new_collection = models.with_name_from("M", 25, "desc")
+
+new_collection.map(&:name)
+
+=> ["L", "K", "J", "I", "H", "G", "F", "E", "D", "C", "B", "A"]
+```
+
+The same works for the custom fields, but not for distance. Distance is onlt ever sorted ascending.
 
 TO DO:
 ------
