@@ -132,7 +132,7 @@ TO DO:
 ------
 
 * Better "limits" to pages, done in a cleaner way.
-* Distance ordering automatically.
+* Clean up the methods so they just take an options hash instead of requiring all the arguments in the methods
 
 Contributing
 ------------
