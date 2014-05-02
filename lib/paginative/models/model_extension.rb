@@ -21,6 +21,10 @@ module Paginative
 
         def self.with_field_from(field="", value="", limit=25, order="asc")
           field = "#{self.name.tableize}.#{field}"
+
+          #replaces the / when tableizing a namespaced class
+          field = field.sub('/','_')
+          
           return self.order("#{field} DESC").where("#{field} < '#{value}'").limit(limit) if order == "desc"
           self.order("#{field} ASC").where("#{field} > '#{value}'").limit(limit)
         end
