@@ -5,7 +5,7 @@ module Paginative
     included do
         def self.by_distance_from(latitude, longitude, distance=0, limit=25)
           return [] unless latitude.present? && longitude.present?
-          distance_sql = send(:distance_sql, latitude.to_f, longitude.to_f, {:units => :km, select_bearing: false, order: "distance ASC"})
+          distance_sql = send(:distance_sql, latitude.to_f, longitude.to_f, {:units => :km, select_bearing: false})
 
           self.where("#{distance_sql} > #{distance}").offset(0).limit(limit)
         end
@@ -24,7 +24,7 @@ module Paginative
 
           #replaces the / when tableizing a namespaced class
           field = field.sub('/','_')
-          
+
           return self.order("#{field} DESC").where("#{field} < '#{value}'").limit(limit) if order == "desc"
           self.order("#{field} ASC").where("#{field} > '#{value}'").limit(limit)
         end
