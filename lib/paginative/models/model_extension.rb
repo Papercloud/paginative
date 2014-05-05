@@ -5,7 +5,7 @@ module Paginative
     included do
         def self.by_distance_from(latitude, longitude, distance=0, limit=25)
           return [] unless latitude.present? && longitude.present?
-          distance_sql = send(:distance_sql, latitude.to_f, longitude.to_f, {:units => :km, select_bearing: false})
+          distance_sql = send(:distance_sql, latitude.to_f, longitude.to_f, {:units => :km, select_bearing: false, order: "distance ASC"})
 
           self.where("#{distance_sql} > #{distance}").offset(0).limit(limit)
         end
