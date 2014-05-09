@@ -10,6 +10,19 @@ Instead of using the usual lookup method of IDs, **Paginative** allows for the l
 Installation
 ---------------
 
+### Rails 3.2
+
+I have moved the dependency down to 3.2 for the github version of the gem, but not the ruby gems version (until tested). In the mean time you can include the gem straight from this repository.
+
+**PLEASE NOTE:** This version has not been properly tested with 3.2. If you run into problems please open an issue and I will have a look into it.
+
+`gem "paginative", github: "RustComet/paginative"`
+
+`bundle install`
+
+### Rails >= 4.0
+
+
 Nothing fancy, just include the gem in your gem file:
 
 `gem "paginative"`
