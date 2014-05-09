@@ -3,6 +3,19 @@ source "https://rubygems.org"
 # Declare your gem's dependencies in paginative.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.
+rails_version = ENV["RAILS_VERSION"] || 3.2
+
+rails = case rails_version
+when "master"
+  {github: "rails/rails"}
+when "default"
+  ">= 3.1.0"
+else
+  "~> #{rails_version}"
+end
+
+gem "rails", rails
+
 gemspec
 
 # Declare any dependencies that are still in development here instead of in
