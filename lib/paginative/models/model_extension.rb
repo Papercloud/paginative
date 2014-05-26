@@ -12,7 +12,7 @@ module Paginative
 
         def self.with_name_from(name="", limit=25, order="asc")
           return self.order("name DESC").where("lower(name) < ?", name.downcase).offset(0).limit(limit) if order == "desc"
-          self.order(name: :asc).where("lower(#{self.name.tableize}.name) > ?", name.downcase).offset(0).limit(limit)
+          self.order(name: :asc).where("lower(#{self.table_name}.name) > ?", name.downcase).offset(0).limit(limit)
         end
 
         def self.with_id_from(id=0, limit=25)
