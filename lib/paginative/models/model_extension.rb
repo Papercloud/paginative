@@ -22,7 +22,7 @@ module Paginative
 
         def self.with_field_from(field="", value="", limit=25, order="asc")
           return self.order(sanitized_ordering(self.table_name, field, order)).where("#{field} < ?", value).limit(limit) if order.downcase == "desc"
-          self.order(sanitized_ordering(field, order)).where("#{field} > ?", value).limit(limit)
+          self.order(sanitized_ordering(self.table_name, field, order)).where("#{field} > ?", value).limit(limit)
         end
     end
   end
