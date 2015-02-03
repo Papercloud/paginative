@@ -35,6 +35,12 @@ describe TestModel do
 
       TestModel.with_field_from("id", @model3.id).should match_array [@model4, @model5]
     end
+
+    it "escapes single quotes in the passed in field" do
+      models = FactoryGirl.create_list(:test_model)
+
+      TestModel.with_field_from("name", "krystal's farm")
+    end
   end
 
   context "by name" do
