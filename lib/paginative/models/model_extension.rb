@@ -1,9 +1,10 @@
 module Paginative
   module ModelExtension
     extend ActiveSupport::Concern
-    include Paginative::OrderingHelpers
 
     included do
+      include Paginative::OrderingHelpers
+
         def self.by_distance_from(latitude, longitude, distance=0, limit=25)
           return [] unless latitude.present? && longitude.present?
           distance_sql = send(:distance_sql, latitude.to_f, longitude.to_f, {:units => :km, select_bearing: false})
