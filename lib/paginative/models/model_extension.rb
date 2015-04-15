@@ -26,8 +26,13 @@ module Paginative
             return raise "Wrong number of values. Expected 2, got #{value.try(:length)}. You must pass a value for each field that you are sorting by" unless value.is_a? Array && value.length == 2
             # You can now pass in an array of 'field' params so that you can have a secondary sort order.
             # This is important if your primary sort field could have duplicate values
-            return self.order(self.table_name, field, order).where("#{primary_sort_field} || #{secondary_sort_field} < ?", "#{primary_value}#{secondary_value}").limit(limit) if order.downcase == "desc"
-            self.order(sanitized_ordering(self.table_name, field, order).where("#{primary_sort_field} || #{secondary_sort_field} > ?", "#{primary_value}#{secondary_value}").limit(limit)
+            primary_sort_field = field[0]
+            primary_value = value[0]
+            secondary_sort_field = field[1]
+            secondary_value = value[1]
+
+            return self.order(sanitized_ordering(self.table_name, field, order)).where("#{primary_sort_field} || #{secondary_sort_field} < ?", "#{primary_value}#{secondary_value}").limit(limit) if order.downcase == "desc"
+            self.order(sanitized_ordering(self.table_name, field, order)), sanitized_ordering(self.table_name, secondary_sort_field, order)).where("#{primary_sort_field} || #{secondary_sort_field} > ?", "#{primary_value}#{secondary_value}").limit(limit)
           else
             return self.order(sanitized_ordering(self.table_name, field, order)).where("#{field} < ?", value).limit(limit) if order.downcase == "desc"
             self.order(sanitized_ordering(self.table_name, field, order)).where("#{field} > ?", value).limit(limit)
