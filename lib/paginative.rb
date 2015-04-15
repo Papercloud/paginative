@@ -13,6 +13,7 @@ end
 
 # Load All the stuff we need
 require 'paginative/models/model_extension'
+require 'paginative/models/ordering_helpers'
 
 # if not using Railtie, call `Ragamuffins::Hooks.init` directly
 if defined? Rails

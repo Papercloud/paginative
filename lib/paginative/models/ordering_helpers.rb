@@ -1,6 +1,6 @@
 module Paginative
   module OrderingHelpers
-    extend AcitveModel::Concern
+    extend ActiveModel::Concern
 
     def sanitized_ordering(table_name, field, order)
       "#{table_name}.#{sanitize_column(field)} #{sanitize_column_direction(order)}"
