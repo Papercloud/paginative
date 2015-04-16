@@ -30,6 +30,8 @@ module Paginative
             primary_value = value[0]
             secondary_sort_field = field[1]
             secondary_value = value[1]
+            # Postgres sorts strings differently to Rails. We use the Postgres string concat and sort so that there is no confusion here.
+            # We need to treat the 2 columns as one string to accurately paginate from a certain point when 2 columns are passed into the argument
             return self.order(sanitized_ordering(self.table_name, field, order)).where("#{primary_sort_field} || #{secondary_sort_field} < ?", "#{primary_value}#{secondary_value}").limit(limit) if order.downcase == "desc"
             self.order(sanitized_ordering(self.table_name, field, order)).where("#{primary_sort_field} || #{secondary_sort_field} > ?", "#{primary_value}#{secondary_value}").limit(limit)
           else
