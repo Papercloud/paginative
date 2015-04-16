@@ -1,3 +1,3 @@
 module Paginative
-  VERSION = "0.0.23"
+  VERSION = "0.1.0"
 end
