@@ -1,6 +1,10 @@
 Paginative
 ==========
 
+## Version 0.1.0
+
+The current Readme refers to upcoming version 0.2.0 at the current `master` branch.
+
 ### A different way to paginate your Rails API.
 
 Paginative came about when building a Rails backend for an iOS app and needed a better way to fetch paginated results while keepping track of whats been deleted from the backend.
@@ -96,6 +100,35 @@ models.with_field_from("id", 1)
 ```
 
 This will return all models that have an ID greater than 1, ordered by ID. Any column can be passed in, and the results will automatically be ordered by that column.
+
+### With more than 1 sort option
+
+Sometimes when you are paginating by a custom field there will be times when you need a secondary sort method. Paginative handles this by allowing the arguments to passed in as arrays. 
+
+Given the example below:
+
+```
+Person.all
+    { first_name: Andrew, last_name: Burrows }
+    { first_name: Andrew, last_name: Chaplin }
+    { first_name: Andrew, last_name: Newton }
+    { first_name: Bradley, last_name: Andrews }
+    { first_name: Howard, last_name: Moon }
+```
+
+And you want to return only the records _after_ Andrew Chaplin, you can do so in the following way:
+
+```
+Person.with_field_from(["first_name", "last_name"], ["Andrew", "Chaplin"])
+```
+
+This will order the `Person` object by `first_name || last_name` and return the objects accordingly.
+
+**NOTE:** This is only guaranteed to work with Postgres at this time as it uses Postgres' `||` string concat method to do the sorting. This is used because Rails and Postgres sort strings differently. In order to be able to accurately paginate we needed to be able to treat them as 1 full string and allow Postgres to do the sorting and the filtering.
+
+As this uses a custom search method for the records it is possible that this query could become slow if you have a lot of records in your database. It is recommended that you add an index on the 2 columns you are planning to sort on.
+
+`add_index :people, ‘first_name || last_name', :name => “index_people_by_name”`
 
 Options & Defaults
 ------------------

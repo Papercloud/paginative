@@ -27,7 +27,7 @@ describe TestModel do
     it "doesn't return values less than the passed in value" do
       create_models
 
-      TestModel.with_field_from("created_at", @model3.created_at).should eq [@model3, @model4, @model5]
+      TestModel.with_field_from("created_at", @model3.created_at).should eq [@model4, @model5]
     end
 
     it "works on INT values" do
@@ -37,7 +37,7 @@ describe TestModel do
     end
 
     it "escapes single quotes in the passed in field" do
-      models = FactoryGirl.create_list(:test_model)
+      models = FactoryGirl.create_list(:test_model, 2)
 
       TestModel.with_field_from("name", "krystal's farm")
     end
@@ -122,6 +122,19 @@ describe TestModel do
 
     it "always sorts distance by ascending" do
       expect(TestModel.by_distance_from(-37,144,0,2)).to eq [@first, @second]
+    end
+  end
+
+  context "Multiple Columns" do
+    before do
+      @first = FactoryGirl.create(:test_model, name: 'abc', address: 'abc')
+      @second = FactoryGirl.create(:test_model, name: 'abc', address: 'bcd')
+      @third = FactoryGirl.create(:test_model, name: 'abc', address: 'cde')
+      @fourth = FactoryGirl.create(:test_model, name: 'abc', address: 'def')
+    end
+
+    it 'can be paginated on the secondary column' do
+      expect(TestModel.with_field_from(["name", "address"], ["abc", "bcd"])).to eq [@third, @fourth]
     end
   end
 end
