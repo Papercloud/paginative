@@ -127,14 +127,18 @@ describe TestModel do
 
   context "Multiple Columns" do
     before do
-      @first = FactoryGirl.create(:test_model, name: 'abc', address: 'abc')
-      @second = FactoryGirl.create(:test_model, name: 'abc', address: 'bcd')
-      @third = FactoryGirl.create(:test_model, name: 'abc', address: 'cde')
-      @fourth = FactoryGirl.create(:test_model, name: 'abc', address: 'def')
+      @first = FactoryGirl.create(:test_model, name: 'abc', address: 'abc', latitude: 140, longitude: 0)
+      @second = FactoryGirl.create(:test_model, name: 'abc', address: 'bcd', latitude: 150, longitude: 12)
+      @third = FactoryGirl.create(:test_model, name: 'abc', address: 'cde', latitude: 150, longitude: 15)
+      @fourth = FactoryGirl.create(:test_model, name: 'abc', address: 'def', latitude: 160, longitude: 2)
     end
 
-    it 'can be paginated on the secondary column' do
+    it 'can be paginated on the secondary column (strings)' do
       expect(TestModel.with_field_from(["name", "address"], ["abc", "bcd"])).to eq [@third, @fourth]
+    end
+
+    it 'can be paginated by a secondary column (integers)' do
+      expect(TestModel.with_field_from(["latitude", "longitude"], [150, 12])).to eq [@third, @fourth]
     end
   end
 end
