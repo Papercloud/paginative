@@ -22,6 +22,7 @@ module Paginative
       end
 
       def self.with_field_from(field="", value="", limit=25, order="asc")
+        order ||= "asc"
         if field.is_a? Array
           return raise "Wrong number of values. Expected 2, got #{value.try(:length)}. You must pass a value for each field that you are sorting by" unless value.is_a?(Array) && value.length == 2
             # You can now pass in an array of 'field' params so that you can have a secondary sort order.
@@ -30,19 +31,10 @@ module Paginative
             primary_value = value[0]
             secondary_sort_field = field[1]
             secondary_value = value[1]
-            # Postgres sorts strings differently to Rails. We use the Postgres string concat and sort so that there is no confusion here.
-            # We need to treat the 2 columns as one string to accurately paginate from a certain point when 2 columns are passed into the argument
+            # This allows us to pass in 2 different sort columns and still paginate correctly.
+            return self.order(sanitized_integer_ordering(self.table_name, field, order)).where("#{self.table_name}.#{primary_sort_field} <= ? AND (#{self.table_name}.#{primary_sort_field} != ? OR #{self.table_name}.#{secondary_sort_field} < ?)", primary_value, primary_value, secondary_value) if order.try(:downcase) == "desc"
 
-            # If we are dealing with integers we need to do some black maging. Concat them as strings, and then return them to their integer value.
-            if primary_value.is_a?(Integer) && secondary_value.is_a?(Integer)
-              return self.order(sanitized_integer_ordering(self.table_name, field, order)).offset("row_number() FROM #{primary_sort_field} WHERE #{secondary_sort_field} = #{secondary_value} ORDER BY #{primary_sort_field} #{order.upcase}")
-
-            elsif primary_value.is_a?(String) && secondary_value.is_a?(String)
-              return self.order(sanitized_string_ordering(self.table_name, field, order)).where("#{primary_sort_field} || #{secondary_sort_field} < ?", "#{primary_value}#{secondary_value}").limit(limit) if order.try(:downcase) == "desc"
-              self.order(sanitized_string_ordering(self.table_name, field, order)).where("#{primary_sort_field} || #{secondary_sort_field} > ?", "#{primary_value}#{secondary_value}").limit(limit)
-            else
-              return raise "Paginative can only handle either 2 string values, or two integer values at this stage. Sorry"
-            end
+            self.order(sanitized_integer_ordering(self.table_name, field, order)).where("#{self.table_name}.#{primary_sort_field} >= ? AND (#{self.table_name}.#{primary_sort_field} != ? OR #{self.table_name}.#{secondary_sort_field} > ?)", primary_value, primary_value, secondary_value)
           else
             return self.order(sanitized_string_ordering(self.table_name, field, order)).where("#{field} < ?", value).limit(limit) if order.try(:downcase) == "desc"
             self.order(sanitized_string_ordering(self.table_name, field, order)).where("#{field} > ?", value).limit(limit)
