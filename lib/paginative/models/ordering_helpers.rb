@@ -3,18 +3,7 @@ module Paginative
     extend ActiveSupport::Concern
 
     included do
-      def self.sanitized_string_ordering(table_name, field, order)
-        # This just double checks that there is a direction. Because there have been times where it was passed in as an argument. But passed as nil
-        order ||= "asc"
-        if field.is_a? Array
-          return raise "Wrong number of sorting fields. Expected 2, got #{field.length}. If you want to sort by a singular field please pass field argument as a string rather than an array." unless field.length == 2
-          "#{table_name}.#{sanitize_column(field[0])} || #{table_name}.#{sanitize_column(field[1])} #{sanitize_column_direction(order)}"
-        else
-          "#{table_name}.#{sanitize_column(field)} #{sanitize_column_direction(order)}"
-        end
-      end
-
-      def self.sanitized_integer_ordering(table_name, field, order)
+      def self.sanitized_ordering(table_name, field, order)
         if field.is_a? Array
           return raise "Wrong number of sorting fields. Expected 2, got #{field.length}. If you want to sort by a singular field please pass field argument as a string rather than an array." unless field.length == 2
 
