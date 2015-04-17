@@ -122,13 +122,7 @@ And you want to return only the records _after_ Andrew Chaplin, you can do so in
 Person.with_field_from(["first_name", "last_name"], ["Andrew", "Chaplin"])
 ```
 
-This will order the `Person` object by `first_name || last_name` and return the objects accordingly.
-
-**NOTE:** This is only guaranteed to work with Postgres at this time as it uses Postgres' `||` string concat method to do the sorting. This is used because Rails and Postgres sort strings differently. In order to be able to accurately paginate we needed to be able to treat them as 1 full string and allow Postgres to do the sorting and the filtering.
-
-As this uses a custom search method for the records it is possible that this query could become slow if you have a lot of records in your database. It is recommended that you add an index on the 2 columns you are planning to sort on.
-
-`add_index :people, ‘first_name || last_name', :name => “index_people_by_name”`
+This will order the `Person` object by `first_name `, and then `last_name` and return the objects accordingly.
 
 Options & Defaults
 ------------------
