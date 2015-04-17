@@ -1,7 +1,7 @@
 Paginative
 ==========
 
-## Version 0.1.0
+## Version 0.2.0
 
 The current Readme refers to upcoming version 0.2.0 at the current `master` branch.
 
