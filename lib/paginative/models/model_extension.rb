@@ -36,8 +36,8 @@ module Paginative
 
             self.order(sanitized_ordering(self.table_name, field, order)).where("#{self.table_name}.#{primary_sort_field} >= ? AND (#{self.table_name}.#{primary_sort_field} != ? OR #{self.table_name}.#{secondary_sort_field} > ?)", primary_value, primary_value, secondary_value)
           else
-            return self.order(sanitized_ordering(self.table_name, field, order)).where("#{field} < ?", value).limit(limit) if order.try(:downcase) == "desc"
-            self.order(sanitized_ordering(self.table_name, field, order)).where("#{field} > ?", value).limit(limit)
+            return self.order(sanitized_ordering(self.table_name, field, order)).where("#{self.table_name}.#{field} < ?", value).limit(limit) if order.try(:downcase) == "desc"
+            self.order(sanitized_ordering(self.table_name, field, order)).where("#{self.table_name}.#{field} > ?", value).limit(limit)
           end
         end
       end
