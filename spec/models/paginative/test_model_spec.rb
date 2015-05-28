@@ -2,6 +2,15 @@ require_relative '../../spec_helper'
 
 describe TestModel do
 
+  before :each do
+    TestModel.class_eval do
+      include Paginative::ModelExtension
+
+      reverse_geocoded_by :latitude, :longitude
+      after_validation :reverse_geocode          # auto-fetch coordinates
+    end
+  end
+
   def create_models
     @model1 = FactoryGirl.create(:test_model, address: "Lorem", created_at: Time.now.ago(2.days))
     @model2 = FactoryGirl.create(:test_model, address: "Ipsum", created_at: Time.now.ago(1.days))
