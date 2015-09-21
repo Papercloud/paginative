@@ -4,10 +4,7 @@ describe TestModel do
 
   before :each do
     TestModel.class_eval do
-      include Paginative::ModelExtension
-
-      reverse_geocoded_by :latitude, :longitude
-      after_validation :reverse_geocode          # auto-fetch coordinates
+      allow_paginative_on :id, :latitude, :longitude, :name, :address, :created_at
     end
   end
 
@@ -53,7 +50,6 @@ describe TestModel do
   end
 
   context "by name" do
-
     it "is valid" do
       model = FactoryGirl.create(:test_model)
 
@@ -81,6 +77,15 @@ describe TestModel do
   end
 
   context "By distance" do
+    before :each do
+      TestModel.class_eval do
+        include Paginative::ModelExtension
+
+        allow_paginative_on :latitude, :longitude
+        reverse_geocoded_by :latitude, :longitude
+        after_validation :reverse_geocode
+      end
+    end
 
     it "limits the results" do
       models = FactoryGirl.create_list(:test_model, 30)
@@ -148,6 +153,69 @@ describe TestModel do
 
     it 'can be paginated by a secondary column (integers)' do
       expect(TestModel.with_field_from(["latitude", "longitude"], [150, 12])).to eq [@third, @fourth]
+    end
+  end
+
+  context 'restricted fields' do
+    before do
+      TestModel.paginative_fields = { name: 'test_models.name' }
+
+      @first = FactoryGirl.create(:test_model, name: 'abc', address: 'abc')
+      @second = FactoryGirl.create(:test_model, name: 'abc', address: 'bcd')
+      @third = FactoryGirl.create(:test_model, name: 'abc', address: 'cde')
+      @fourth = FactoryGirl.create(:test_model, name: 'abc', address: 'def')
+    end
+
+    it 'ignores unpermitted fields with a warning' do
+      expect(Rails.logger).to receive(:warn)
+
+      TestModel.with_field_from('address', 'bcd')
+    end
+
+    it 'prunes the fields to those only permitted' do
+      expect(TestModel).to receive(:map_fields).with(['name']) { ['test_models.name'] }
+      TestModel.with_field_from(["name", "address"], ["abc", "bcd"])
+    end
+
+    it 'returns the original scope and ordering, still limited' do
+      result = TestModel.with_field_from('address', 'bcd', 2)
+      expect(result).to eq [@first, @second]
+    end
+  end
+
+  describe 'restricting fields' do
+    before do
+      TestModel.paginative_fields = {}
+    end
+
+    context 'no fields' do
+      it 'defaults to no paginative fields' do
+        expect(TestModel.paginative_fields).to be_empty
+      end
+    end
+
+    context 'self mapped columns' do
+      before do
+        TestModel.class_eval do
+          allow_paginative_on :created_at
+        end
+      end
+
+      it 'sets the paginative fields to self mappings' do
+        expect(TestModel.paginative_fields).to eq({ created_at: 'test_models.created_at' })
+      end
+    end
+
+    context 'join mapped columns' do
+      before do
+        TestModel.class_eval do
+          allow_paginative_on created_at: 'other_models.created_at'
+        end
+      end
+
+      it 'sets the paginative fields to the specified mapping' do
+        expect(TestModel.paginative_fields).to eq({ created_at: 'other_models.created_at' })
+      end
     end
   end
 end
