@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'rspec/autorun'
 require 'factory_girl_rails'
 require 'database_cleaner'
+require 'pry'
 
 Rails.backtrace_cleaner.remove_silencers!
 
