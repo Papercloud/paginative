@@ -27,6 +27,8 @@ module Paginative
       def self.with_field_from(field="", value="", limit=25, order="asc")
         order ||= "asc"
 
+        # Wrap and flatten whatever comes in, if it's a single value, we end up with an array.
+        # If it's an array, stays an array.
         fields = Array.wrap(field).flatten
         values = Array.wrap(value).flatten
         zipped = fields.zip(values)
@@ -34,7 +36,7 @@ module Paginative
 
         q = self.all
         if fields.present? && fields.any?
-          return raise "Wrong number of values. Expected 2, got #{values.try(:length)}. You must pass a value for each field that you are sorting by" unless values.length == 2
+          return raise "Wrong number of values. Expected 2, got #{values.try(:length)}. You must pass a value for each field that you are sorting by" unless values.length <= 2 && values.length == fields.length
 
           mapped_fields = map_fields(fields)
           q = q.order(sanitized_ordering(self.table_name, mapped_fields, order))
@@ -61,6 +63,8 @@ module Paginative
 
       private
 
+      # Steps through the provided paginated fields, zipped with their values, and removes those not
+      # in the `paginative_fields` hash as specified with `allow_paginative_on`.
       def self.prune_fields(zipped)
         zipped.select{ |f, v| self.paginative_fields.has_key? f.to_sym }.tap do |pruned|
           unless pruned.nil?
@@ -70,10 +74,13 @@ module Paginative
         end
       end
 
+      # Takes the pruned fields as an array, and returns the mapped versions.
       def self.map_fields(fields)
         fields.map{ |f| self.paginative_fields[f.to_sym] }
       end
 
+      # Returns the appropriate order given sort direction and current field in the collection.
+      # We don't want to use inclusive paging if we are at the last field being paginated, so either lt or gt is used.
       def self.sort_operator(index, count, direction)
         if direction.try(:downcase) == "desc"
           index < (count - 1) ? '<=' : '<'
@@ -84,12 +91,15 @@ module Paginative
     end
 
     module ClassMethods
+      # Sets the paginative fields set of the class to the specified columns.
       def allow_paginative_on(*mappings)
         self.paginative_fields = process_fields(mappings)
       end
 
       private
 
+      # Process specified mappings to either scope to the table name of the current class
+      # or to use the mappings provided.
       def process_fields(mappings)
         result = {}
 
@@ -104,6 +114,7 @@ module Paginative
         result
       end
 
+      # Returns a string scoping the specified field to the current class' table.
       def self_map(field)
         "#{self.table_name}.#{field}"
       end
