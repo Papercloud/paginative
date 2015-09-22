@@ -218,4 +218,17 @@ describe TestModel do
       end
     end
   end
+
+  describe 'paginating joint fields' do
+    before do
+      TestModel.paginative_fields = { created_at: 'joint_models.created_at' }
+
+      @first = FactoryGirl.create(:test_model, name: 'abc', address: 'abc', joint_models: [FactoryGirl.build(:joint_model, created_at: Time.now)])
+      @second = FactoryGirl.create(:test_model, name: 'abc', address: 'bcd', joint_models: [FactoryGirl.build(:joint_model, created_at: 5.minutes.ago)])
+    end
+
+    it 'can be paginated on the secondary column (strings)' do
+      expect(TestModel.joint.with_field_from('created_at', 3.minutes.ago, 24, 'DESC')).to eq [@second]
+    end
+  end
 end
