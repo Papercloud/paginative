@@ -34,8 +34,7 @@ module Paginative
 
         q = self.all
         if fields.present? && fields.any?
-          return raise "Too many" unless fields.length <= 2
-          return raise "Something...." unless values.length == fields.length
+          return raise "Wrong number of values. Expected 2, got #{values.try(:length)}. You must pass a value for each field that you are sorting by" unless values.length == 2
 
           mapped_fields = map_fields(fields)
           q = q.order(sanitized_ordering(self.table_name, mapped_fields, order))
