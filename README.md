@@ -1,7 +1,7 @@
 Paginative
 ==========
 
-## Version 0.2.0
+## Version 0.3.0
 
 The current Readme refers to upcoming version 0.2.0 at the current `master` branch.
 
@@ -107,7 +107,7 @@ This will return all models that have an ID greater than 1, ordered by ID. Any c
 Introduced in `0.3.0`, we've added a class method, `allow_paginative_on`, that allows you to whitelist the fields that you want to open up pagination on in your queries using `with_field_from`. By default, *no fields* are open for pagination using `with_field_from`, so you'll need to specify the ones you want to use before you can paginate anything with that method.
 
 Fields can be specified as symbols, which get mapped to the table of the current class:
-```
+```ruby
 class YourModel < ActiveRecord::Base
   include Paginative::ModelExtension
 
@@ -117,7 +117,7 @@ end
 ```
 
 Or they can be specified as hashes, using the mapping you choose:
-```
+```ruby
 class YourModel < ActiveRecord::Base
   include Paginative::ModelExtension
 
@@ -127,7 +127,7 @@ end
 ```
 
 Or a combination:
-```
+```ruby
 class YourModel < ActiveRecord::Base
   include Paginative::ModelExtension
 
@@ -137,7 +137,7 @@ end
 ```
 
 The main use case in using the hash-style of specifying your paginative fields is to allow pagination on a joint table:
-```
+```ruby
 class YourModel < ActiveRecord::Base
   include Paginative::ModelExtension
 
@@ -157,6 +157,7 @@ class OtherModel < ActiveRecord::Base
 end
 ```
 The above would allow you to fetch all of your models that have the join, but order by the creation time of the associated objects.
+
 ### With more than 1 sort option
 
 Sometimes when you are paginating by a custom field there will be times when you need a secondary sort method. Paginative handles this by allowing the arguments to passed in as arrays.
