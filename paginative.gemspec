@@ -26,7 +26,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl_rails', "~> 4.4.1"
   s.add_development_dependency 'database_cleaner', "~> 1.2.0"
   s.add_development_dependency 'awesome_print', "~> 1.2.0"
-
+  s.add_development_dependency 'appraisal'
+  s.add_development_dependency 'pry'
 
   s.test_files = Dir["spec/**/*"]
 end

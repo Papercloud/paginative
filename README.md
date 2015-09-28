@@ -1,7 +1,7 @@
 Paginative
 ==========
 
-## Version 0.2.0
+## Version 0.3.0
 
 The current Readme refers to upcoming version 0.2.0 at the current `master` branch.
 
@@ -101,9 +101,66 @@ models.with_field_from("id", 1)
 
 This will return all models that have an ID greater than 1, ordered by ID. Any column can be passed in, and the results will automatically be ordered by that column.
 
+
+### Allowed Paginative Fields
+
+Introduced in `0.3.0`, we've added a class method, `allow_paginative_on`, that allows you to whitelist the fields that you want to open up pagination on in your queries using `with_field_from`. By default, *no fields* are open for pagination using `with_field_from`, so you'll need to specify the ones you want to use before you can paginate anything with that method.
+
+Fields can be specified as symbols, which get mapped to the table of the current class:
+```ruby
+class YourModel < ActiveRecord::Base
+  include Paginative::ModelExtension
+
+  allow_paginative_on :created_at
+    #=> Allows you to paginate on `your_models.created_at`.
+end
+```
+
+Or they can be specified as hashes, using the mapping you choose:
+```ruby
+class YourModel < ActiveRecord::Base
+  include Paginative::ModelExtension
+
+  allow_paginative_on created_at: 'your_models.created_at'
+    #=> Allows you to paginate on `your_models.created_at`.
+end
+```
+
+Or a combination:
+```ruby
+class YourModel < ActiveRecord::Base
+  include Paginative::ModelExtension
+
+  allow_paginative_on :id, created_at: 'your_models.created_at'
+    #=> Pagination on `your_models.id` and `your_models.created_at`
+end
+```
+
+The main use case in using the hash-style of specifying your paginative fields is to allow pagination on a joint table:
+```ruby
+class YourModel < ActiveRecord::Base
+  include Paginative::ModelExtension
+
+  has_many :other_models
+
+  allow_paginative_on created_at: 'other_models.created_at'
+    #=> Pagination on `other_models.created_at`
+
+  class << self
+    def with_other_models
+      joins(:other_models).select('your_models.*, other_models.created_at')
+    end
+  end
+end
+
+class OtherModel < ActiveRecord::Base
+end
+```
+The above would allow you to fetch all of your models that have the join, but order by the creation time of the associated objects.
+
 ### With more than 1 sort option
 
-Sometimes when you are paginating by a custom field there will be times when you need a secondary sort method. Paginative handles this by allowing the arguments to passed in as arrays. 
+Sometimes when you are paginating by a custom field there will be times when you need a secondary sort method. Paginative handles this by allowing the arguments to passed in as arrays.
 
 Given the example below:
 
