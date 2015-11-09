@@ -1,9 +1,9 @@
 Paginative
 ==========
 
-## Version 0.3.0
+## Version 0.3.1
 
-The current Readme refers to upcoming version 0.2.0 at the current `master` branch.
+The current README refers to version 0.3.1 at the current `master` branch.
 
 ### A different way to paginate your Rails API.
 
@@ -25,7 +25,6 @@ I have moved the dependency down to 3.2 for the github version of the gem, but n
 `bundle install`
 
 ### Rails >= 4.0
-
 
 Nothing fancy, just include the gem in your gem file:
 
@@ -73,7 +72,6 @@ new_collection.map(&:name)
 => ["N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 ```
 
-
 ### By Distance
 
 *This relies on a model been Geocoded, and having a `:latitude` and `:longitude` column on the model so that it can calculate the distance. The gem itself will be installed as a dependency, but it's worth checking out the documentation [here](https://github.com/alexreisner/geocoder) if you haven't already*
@@ -88,7 +86,6 @@ models.by_distance_from(latitude, longitude, distance)
 
 This will return the next page of objects that are further away than the distance passed in. So if you are doing a nearby sort, and you need the next page, all you have to do is pass in the distance that the last object on the page from your current `:latitude` and `:longitude` and it will give you the next page of results.
 
-
 ### By a Custom Field
 
 Lets say you want to sort by something other than name or distance, well Paginative has you covered.
@@ -100,7 +97,6 @@ models.with_field_from("id", 1)
 ```
 
 This will return all models that have an ID greater than 1, ordered by ID. Any column can be passed in, and the results will automatically be ordered by that column.
-
 
 ### Allowed Paginative Fields
 
