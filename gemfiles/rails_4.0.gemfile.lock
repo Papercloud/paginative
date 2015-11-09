@@ -1,7 +1,7 @@
 PATH
   remote: ../
   specs:
-    paginative (0.2.2)
+    paginative (0.3.1)
       geocoder (~> 1.1.9)
       rails (>= 3.2)
 

@@ -5,9 +5,6 @@ module Paginative
     included do
       include Paginative::OrderingHelpers
 
-      mattr_accessor :paginative_fields
-      @@paginative_fields = {}
-
       def self.by_distance_from(latitude, longitude, distance=0, limit=25)
         return [] unless latitude.present? && longitude.present?
         distance_sql = send(:distance_sql, latitude.to_f, longitude.to_f, {:units => :km, select_bearing: false})
@@ -34,7 +31,7 @@ module Paginative
         zipped = fields.zip(values)
         fields, values = prune_fields(zipped).transpose
 
-        q = self.all
+        q = self
         if fields.present? && fields.any?
           return raise "Wrong number of values. Expected 2, got #{values.try(:length)}. You must pass a value for each field that you are sorting by" unless values.length <= 2 && values.length == fields.length
 
@@ -93,6 +90,7 @@ module Paginative
     module ClassMethods
       # Sets the paginative fields set of the class to the specified columns.
       def allow_paginative_on(*mappings)
+        cattr_accessor :paginative_fields
         self.paginative_fields = process_fields(mappings)
       end
 
